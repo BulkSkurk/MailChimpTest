@@ -78,14 +78,19 @@ public class MyStepdefs {
     @Then("We {string} to create an account")
     public void weHaveCreatedAnAccount(String expectedResult) {
 
-        String actual = driver.getTitle();
-        String expected = "Success | Mailchimp";
+
 
         if(Objects.equals(expectedResult, "Success")){
+            String actual = driver.getTitle();
+            String expected = "Success | Mailchimp";
             assertEquals(actual,expected);
 
         } else if(Objects.equals(expectedResult,"Fail")){
-            assertNotEquals(actual,expected);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement errorMsg = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("av-flash-errors")));
+            String actual = errorMsg.getText();
+            String expected = "Please check your entry and try again.";
+            assertEquals(actual,expected);
         }
 
         driver.quit();
